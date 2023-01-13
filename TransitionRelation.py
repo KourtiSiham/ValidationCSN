@@ -1,7 +1,10 @@
-class TransitionRelation:
+from abc import ABC, abstractmethod
 
-    def __init__(self):
+class TransitionRelation(ABC):
+    @abstractmethod
+    def roots(self):
         pass
 
-    def next(self, c):
+    @abstractmethod
+    def next(self, source):
         pass
