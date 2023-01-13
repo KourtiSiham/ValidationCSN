@@ -1,4 +1,4 @@
-from TransitionRelation import TransitionRelation
+from librarie import TransitionRelation
 
 class Hanoi(TransitionRelation):
     def __init__(self, n, rods):
