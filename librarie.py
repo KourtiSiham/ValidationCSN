@@ -33,12 +33,16 @@ class ParentTraceProxy(identifyProxy):
         self.dict = dict
     def roots(self):
         neighbours = self.operond.roots()
+        for n in neighbours:
+            if n not in self.dict:
+                self.dict[n] = None
+        return neighbours
         #add
     def next(self, source):
         neighbours = self.operand.next(source)
         for n in neighbours:
             if n not in self.dict:
-                self.dict[n] = source, None
+                self.dict[n] = source
         return neighbours
 
      
