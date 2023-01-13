@@ -33,7 +33,7 @@ class ParentTraceProxy(identifyProxy):
         self.dict = dict
     def roots(self):
         neighbours = self.operond.roots()
-        #add smthg
+        #add
     def next(self, source):
         neighbours = self.operand.next(source)
         for n in neighbours:
