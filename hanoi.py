@@ -22,7 +22,7 @@ class Hanoi(TransitionRelation):
             self.rods[src_peg].append(top_of_src)
             return None
 if __name__ == "__main__":
-    n = 3
+    n = 2
     rods = [list(range(n, 0, -1)), [], []]
     h = Hanoi(n, rods)
     initial_state = h.roots()
