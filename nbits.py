@@ -1,4 +1,4 @@
-from TransitionRelation import TransitionRelation
+from librarie import TransitionRelation
 import itertools
 
 class Nbits(TransitionRelation):
