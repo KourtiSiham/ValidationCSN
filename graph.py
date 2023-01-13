@@ -2,18 +2,18 @@ from collections import deque
 from queue import Queue
 
 class Node:
-    def _init_(self, value):
+    def __init__(self, value):
         self.value = value
         self.children = []
 
     def add_child(self, child):
         self.children.append(child)
 
-    def _str_(self):
+    def __str__(self):
         return "Node %s" % self.value
 
-    def _repr_(self):
-        return self._str_()
+    def __repr__(self):
+        return self.__str__()
 
 
 
@@ -32,7 +32,7 @@ def bfs_iterative(starting_node, visited=[]):
 
 
 class GraphData:
-    def _init_(self):
+    def __init__(self):
         self.initial = None
         self.graph = {}
 
@@ -63,11 +63,11 @@ def bfs(data, on_discovery=lambda source, n: None, on_known=lambda source, n: No
                 on_known(source, n)
                 continue
             on_discovery(source, n)
-            queue.put👎
-            knowns.add👎
+            queue.put(n)
+            knowns.add(n)
     return knowns
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     data = GraphData()
     parent = "a"
     children = ["b", "c", "d"]
