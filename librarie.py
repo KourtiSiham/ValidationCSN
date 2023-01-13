@@ -22,16 +22,23 @@ class identifyProxy:
 class ReplaceRootsProxy(identifyProxy):
     def __init__(self, operand ,newRoots):
         super().__init__(operand)
+        self.newRoots = newRoots
+    def roots(self):
+        return self.newroots    
+    
 
-class ParentStoreProxy(identifyProxy):
-    def __init__(self, operand):
+class ParentTraceProxy(identifyProxy):
+    def __init__(self, operand,dict):
         super().__init__(operand)
-        self.parent = {}
+        self.dict = dict
+    def roots(self):
+        neighbours = self.operond.roots()
+        #add smthg
+    def next(self, source):
+        neighbours = self.operand.next(source)
+        for n in neighbours:
+            if n not in self.dict:
+                self.dict[n] = source, None
+        return neighbours
 
-    def next(self, conf):
-        ns = self.operand.next(conf)
-
-        for n in ns:
-            if n not in self.parent:
-                self.parent[n] = conf, None
-        return ns
+     
