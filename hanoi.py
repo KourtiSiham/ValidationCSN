@@ -1,6 +1,7 @@
 import copy
 import sys
 from librarie import TransitionRelation
+from librarie import identifyProxy
 
 class Hanoi(TransitionRelation):
     def __init__(self, nb_stacks, nb_disks):
@@ -26,7 +27,19 @@ class Hanoi(TransitionRelation):
     
     def roots(self):
         return self.initial()
-  
+class HanoiLoggerProxy(identifyProxy):
+    def __init__(self, operand):
+        super().__init__(operand)
+        self.logs = []
+
+    def roots(self):
+        self.logs.append(f'roots method called')
+        return self.operand.roots()
+
+    def next(self, source):
+        self.logs.append(f'next method called with source: {source}')
+        return self.operand.next(source)
+ 
 class HanoiConfiguration(list):
     def __init__(self, nb_stacks, nb_disks):
         list.__init__(self, [[(nb_disks - i) for i in range(nb_disks)]] + [[] for _ in range(nb_stacks - 1)])
@@ -49,8 +62,11 @@ class HanoiConfiguration(list):
             if conf[j] != self[j]:
                 return False
         return True
+
+
 if __name__ == "__main__":
-    hanoi = Hanoi(7, 6)
+
+    hanoi = HanoiLoggerProxy(Hanoi(3, 5))
     initial_config = hanoi.initial()[0]
     print("Initial Configuration: ", initial_config)
     current_config = initial_config
@@ -69,3 +85,4 @@ if __name__ == "__main__":
             k = k + 1
         print("Solution found!")
         break
+    print("Logs: ", hanoi.logs)
