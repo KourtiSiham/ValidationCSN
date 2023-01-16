@@ -45,4 +45,8 @@ class ParentTraceProxy(identifyProxy):
                 self.dict[n] = source
         return neighbours
 
-     
+
+class SemanticTransitionRelation:
+    def initialConfigurations (self): pass
+    def enablesdActions (self, source): pass
+    def execute (self, action, source): pass
