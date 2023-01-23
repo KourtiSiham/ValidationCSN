@@ -125,9 +125,6 @@ def tohIterative(num_of_disks, src, aux, dest):
             moveDisksBetweenTwoPoles(aux, dest, a, d)
 
 
-# 08/12/2021
-# Hanoi 2	
-
 def is_accepted(c):
     nbDisks = max(max(c))
 

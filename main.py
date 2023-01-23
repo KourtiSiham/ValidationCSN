@@ -61,7 +61,6 @@ def main_hanoi_2():
     print("States after ", init, "are", next)
 
     print("-------------------------")
-
-    print("Kripke Buchi")
+    
 if __name__ == "__main__":
     main_hanoi_1()

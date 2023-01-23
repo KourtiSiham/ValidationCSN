@@ -27,7 +27,8 @@ class ReplaceRootsProxy(identifyProxy):
         return self.newroots    
     
 class AcceptingSet:
-    def is_accepting(c): pass
+    def is_accepting(c): 
+        pass
 class ParentTraceProxy(identifyProxy):
     def __init__(self, operand,dict):
         super().__init__(operand)
