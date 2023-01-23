@@ -1,3 +1,5 @@
+import inspect
+
 from librarie import *
 from hanoi import *
 
