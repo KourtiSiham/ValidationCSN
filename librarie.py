@@ -49,11 +49,17 @@ class ParentTraceProxy(identifyProxy):
 
 
 class SemanticTransitionRelation:
-    def initialConfigurations (self): pass
-    def enablesdActions (self, source): pass
-    def execute (self, action, source): pass
+    def initialConfigurations (self): 
+        pass
+    def enablesdActions (self, source): 
+        pass
+    def execute (self, action, source):
+         pass
 
 class InputSemanticTransitionRelation:
-    def initial (self): pass
-    def enablesdActions (self, input, source): pass
-    def execute (self, action, input, source): pass
+    def initial (self): 
+        pass
+    def enablesdActions (self, input, source): 
+        pass
+    def execute (self, action, input, source): 
+        pass
