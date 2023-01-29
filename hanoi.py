@@ -4,6 +4,7 @@ from librarie import *
 from SoupModule import SoupProgram
 from Str2Tr import Str2Tr
 from SoupModule import SoupSemantics
+from abc import ABC, abstractmethod
 
 from dis import dis
 from distutils.command.config import config
@@ -155,12 +156,15 @@ def action_def(s, t):
     return action
 
 class Hanoi(TransitionRelation,AcceptingSet):
+
     def __init__(self, nbStacks, nbDisks):
         self.nbDisks = nbDisks
         self.nbStacks = nbStacks
     
     def initial(self):
         return [HanoiConfiguration(self.nbStacks, self.nbDisks)]
+    def roots(self):
+       pass
     
     def next(self, n):
         next_states = []

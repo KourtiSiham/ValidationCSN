@@ -20,7 +20,8 @@ def main_hanoi_2():
     print("-------------------------")
     print("Guarde / Action")
     print("Example 1: ")
-    hanoi_tower = ParentTraceProxy(Hanoi(3,3))
+    dic={}
+    hanoi_tower = ParentTraceProxy(Hanoi(3,3),dic)
     for i, j in [(0, 1), (0, 2), (2, 1)]:
         init = hanoi_tower.initial()[0]
         guarde = guarde_def(i, j)
@@ -65,4 +66,4 @@ def main_hanoi_2():
     print("-------------------------")
     
 if __name__ == "__main__":
-    main_hanoi_1()
+    main_hanoi_2()
