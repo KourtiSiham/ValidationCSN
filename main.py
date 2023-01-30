@@ -45,9 +45,9 @@ def main_hanoi_2():
     print("Soup")
     soup = hanoi_soap(3, 3)
     Behavior_Soup = SoupSemantics(soup)
-    init = Behavior_Soup.initial()[0]
+    init = Behavior_Soup.initialConfigurations()[0]
     print("First State: ", init)
-    actions = Behavior_Soup.actions(init)
+    actions = Behavior_Soup.enabledActions(init)
 
     if actions:
         print("Possible action : ", inspect.getsource(action))
@@ -64,6 +64,7 @@ def main_hanoi_2():
     print("States after ", init, "are", next)
 
     print("-------------------------")
-    
+
+
 if __name__ == "__main__":
     main_hanoi_2()

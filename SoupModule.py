@@ -32,8 +32,9 @@ class SoupSemantics(SemanticTransitionRelation):
         return filter(lambda r: r.guard(source), self.program.rules)  # To be checked
 
     def execute(self, action, source):
-        target = source.copy  # copy.deepcopy(source)
+        target = copy.deepcopy(source)  # source.copy
         return action.execute(target)
+
 
 class InputSoupSemantics(InputSemanticTransitionRelation):
     def __init__(self, program):

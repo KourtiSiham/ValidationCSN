@@ -3,30 +3,34 @@ import sys
 from librarie import *
 from SoupModule import SoupProgram
 from Str2Tr import Str2Tr
-from SoupModule import SoupSemantics
+from SoupModule import *
 from abc import ABC, abstractmethod
 
 from dis import dis
 from distutils.command.config import config
 # Python3 program for iterative Tower of Hanoi
 import sys
+
+
 # A structure to represent a stack
 
-#Hanoi 1
+# Hanoi 1
 class Stack:
     # Constructor to set the data of
     # the newly created tree node
     def __init__(self, capacity):
         self.capacity = capacity
         self.top = -1
-        self.array = [0]*capacity
+        self.array = [0] * capacity
+
 
 # function to create a stack of given capacity.
 
 
 def createStack(capacity):
     stack = Stack(capacity)
-    return 
+    return
+
 
 # Stack is full when top is equal to the last index
 
@@ -34,32 +38,36 @@ def createStack(capacity):
 def isFull(stack):
     return (stack.top == (stack.capacity - 1))
 
+
 # Stack is empty when top is equal to -1
 
 
 def isEmpty(stack):
     return (stack.top == -1)
 
+
 # Function to add an item to stack.
 # It increases top by 1
 
 
 def push(stack, item):
-    if(isFull(stack)):
+    if (isFull(stack)):
         return
     stack.top += 1
     stack.array[stack.top] = item
+
 
 # Function to remove an item from stack.
 # It decreases top by 1
 
 
 def Pop(stack):
-    if(isEmpty(stack)):
+    if (isEmpty(stack)):
         return -sys.maxsize
     Top = stack.top
     stack.top -= 1
     return stack.array[Top]
+
 
 # Function to implement legal
 # movement between two poles
@@ -91,11 +99,13 @@ def moveDisksBetweenTwoPoles(src, dest, s, d):
         push(dest, pole1TopDisk)
         moveDisk(s, d, pole1TopDisk)
 
+
 # Function to show the movement of disks
 
 
 def moveDisk(fromPeg, toPeg, disk):
     print("Move the disk", disk, "from '", fromPeg, "' to '", toPeg, "'")
+
 
 # Function to implement TOH puzzle
 
@@ -136,12 +146,13 @@ def is_accepted(c):
             return False
     return True
 
+
 def hanoi_soap(nbStacks, nbDisks):
     i_conf = HanoiConfiguration(nbStacks, nbDisks)
     soup = SoupProgram(i_conf)
     for i in range(nbStacks):
         for j in range(nbStacks):
-            soup.add(f'{i}-{j}', guarde_def(i, j), action_def(i, j))
+            soup.add(Rule(f'{i}-{j}', guarde_def(i, j), action_def(i, j)))
     return soup
 
 
@@ -153,19 +164,22 @@ def action_def(s, t):
     def action(c):
         disk = c[s].pop()
         c[t].append(disk)
+
     return action
 
-class Hanoi(TransitionRelation,AcceptingSet):
+
+class Hanoi(TransitionRelation, AcceptingSet):
 
     def __init__(self, nbStacks, nbDisks):
         self.nbDisks = nbDisks
         self.nbStacks = nbStacks
-    
+
     def initial(self):
         return [HanoiConfiguration(self.nbStacks, self.nbDisks)]
+
     def roots(self):
-       pass
-    
+        pass
+
     def next(self, n):
         next_states = []
         for i in range(self.nbStacks):
@@ -178,7 +192,7 @@ class Hanoi(TransitionRelation,AcceptingSet):
                         temp[j].append(disk)
                         next_states.append(temp)
         return next_states
-    
+
     def is_accepting(self, c):
         k = 0
         if not c[-1]:
@@ -189,9 +203,10 @@ class Hanoi(TransitionRelation,AcceptingSet):
             k = k + 1
         return True
 
+
 class HanoiConfiguration(list):
     def __init__(self, nbStacks, nbDisks):
-        list.__init__(self, [[(nbDisks - i) for i in range(nbDisks)]] + [[] for _ in range(nbStacks - 1)] )
+        list.__init__(self, [[(nbDisks - i) for i in range(nbDisks)]] + [[] for _ in range(nbStacks - 1)])
 
     def __hash__(self):
         hash = 0
@@ -211,4 +226,3 @@ class HanoiConfiguration(list):
                 if conf[i][j] != self[i][j]:
                     return False
         return True
-
