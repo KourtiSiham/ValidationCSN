@@ -29,7 +29,7 @@ class Stack:
 
 def createStack(capacity):
     stack = Stack(capacity)
-    return
+    return stack
 
 
 # Stack is full when top is equal to the last index

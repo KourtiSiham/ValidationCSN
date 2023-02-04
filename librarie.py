@@ -11,7 +11,7 @@ class TransitionRelation(ABC):
 
 
 
-class identifyProxy:
+class identifyProxy(object):
     def __init__(self, operand):
         self.operand = operand
 
@@ -29,6 +29,7 @@ class ReplaceRootsProxy(identifyProxy):
 class AcceptingSet:
     def is_accepting(c): 
         pass
+
 class ParentTraceProxy(identifyProxy):
     def __init__(self, operand,dict=None):
         super().__init__(operand)
@@ -50,7 +51,7 @@ class ParentTraceProxy(identifyProxy):
             if n not in self.dict:
                 self.dict[n] = [source]
         return neighbours
-        
+
     def get_trace(dic, target):
         result = []
         current = target
