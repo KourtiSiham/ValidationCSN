@@ -1,11 +1,7 @@
 from collections import deque
 
 
-def bfs(graph,
-        acc,
-        on_entry=lambda source, n, acc: False,
-        on_known=lambda source, n, acc: False,
-        on_exit =lambda source,    acc: False):
+def bfs(graph, acc,on_entry=lambda source, n, acc: False, on_known=lambda source, n, acc: False, on_exit =lambda source, acc: False):
     known = set()
     frontier = deque()
     at_start = True
@@ -29,6 +25,19 @@ def bfs(graph,
         if on_exit(source, acc):
             return acc, known
     return acc, known
+def bfs_iterative(starting_node, visited=[]):
+    queue = []
+    queue.insert(0, starting_node)
+    visited.append(starting_node)
+    while len(queue) != 0:
+        current_node = queue.pop()
+        # print(current_node.value)
+        for child in current_node.children:
+            if child not in visited:
+                queue.insert(0, child)
+                visited.append(child)
+    return visited
+
 
 
 def predicate_finder(
@@ -39,7 +48,10 @@ def predicate_finder(
         a[2] += 1
         # check predicate
         a[1] = predicate(n)
+        # set the node that checks the predicate in the last field of the accumulator
+        if a[1]:
+            a[3] = n
         # return true if predicate is true - stop the traversal
         return a[1]
 
-    return bfs(graph, [predicate, False, 0], on_entry=check_predicate)
+    return bfs(graph, [predicate, False, 0, None], on_entry=check_predicate)

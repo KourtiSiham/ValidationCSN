@@ -22,7 +22,7 @@ class identifyProxy:
 class ReplaceRootsProxy(identifyProxy):
     def __init__(self, operand ,newRoots):
         super().__init__(operand)
-        self.newRoots = newRoots
+        self.newRoots = newRoots #new configurations
     def roots(self):
         return self.newroots    
     
@@ -30,9 +30,12 @@ class AcceptingSet:
     def is_accepting(c): 
         pass
 class ParentTraceProxy(identifyProxy):
-    def __init__(self, operand,dict):
+    def __init__(self, operand,dict=None):
         super().__init__(operand)
+        if dict == None:
+            dict= {}
         self.dict = dict
+    
     def roots(self):
         neighbours = self.operond.roots()
         for n in neighbours:
@@ -40,12 +43,22 @@ class ParentTraceProxy(identifyProxy):
                 self.dict[n] = None
         return neighbours
         #add
+   
     def next(self, source):
         neighbours = self.operand.next(source)
         for n in neighbours:
             if n not in self.dict:
-                self.dict[n] = source
+                self.dict[n] = [source]
         return neighbours
+        
+    def get_trace(dic, target):
+        result = []
+        current = target
+        while current in dic:
+            result.append(current)
+            current = dic[current]
+        return result[::-1]
+
 
 
 class SemanticTransitionRelation:

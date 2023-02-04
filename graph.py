@@ -1,120 +1,97 @@
 from collections import deque
 from queue import Queue
+from Algo import bfs_iterative,predicate_finder,bfs
+from librarie import TransitionRelation
 
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.children = []
-
-    def add_child(self, child):
-        self.children.append(child)
-
-    def __str__(self):
-        return "Node %s" % self.value
-
-    def __repr__(self):
-        return self.__str__()
-
-
-
-def bfs_iterative(starting_node, visited=[]):
-    queue = []
-    queue.insert(0, starting_node)
-    visited.append(starting_node)
-    while len(queue) != 0:
-        current_node = queue.pop()
-        # print(current_node.value)
-        for child in current_node.children:
-            if child not in visited:
-                queue.insert(0, child)
-                visited.append(child)
-    return visited
-
-
-class GraphData:
-    def __init__(self):
-        self.initial = None
-        self.graph = {}
-
-    def add(self, a, neighbours, initial=False):
-        self.graph[a] = neighbours
-        if initial:
-            assert self.initial == None
-            self.initial = self.graph[a]
-
-    def get_neighbours(self, a):
-        return self.graph[a]
-
-    def get_initial(self):
+class GraphData(TransitionRelation):
+    def __init__(self,ini,graph):
+        self.initial = ini
+        self.graph = graph
+    def roots(self):
         return self.initial
 
+    def next(self, a):
+        try:
+          return self.graph[a]
+        except KeyError:
+            return []
 
+def main_BFS():
+    g = {
+        0: [1, 3],
+        1: [2],
+        2: [0],
+        3: [3, 4],
+        4: [1, 5],
+        5: [],
+        6: []
+        }
 
-def bfs(data, on_discovery=lambda source, n: None, on_known=lambda source, n: None):
-    knowns = set()
-    queue = Queue()
-    queue.put(data.get_initial())
-    knowns.add(data.get_initial())
-    while not queue.empty():
-        source = queue.get()
-        neighbours = data.get_neighbours(source)
-        for n in neighbours:
-            if n in knowns:
-                on_known(source, n)
-                continue
-            on_discovery(source, n)
-            queue.put(n)
-            knowns.add(n)
-    return knowns
+    graph1 = GraphData([1], g)
 
-if __name__ == "__main__":
-    data = GraphData()
-    parent = "a"
-    children = ["b", "c", "d"]
-    children_b = ["e", "f"]
-    children_c = ["r", "t"]
+    def e1(s, n, a):
+        # increment the count
+        a[2] += 1
+        # is the current node equal to the target ?
+        a[1] = a[0] == n
+        # return true if target found
+        return a[1]
 
-    data.add("a", children, initial=True)
-    data.add("b", children_b)
-    data.add("c", children_c)
-    data.add("d", [])
-    data.add("e", [])
-    data.add("f", ["f"])
-    data.add("r", [])
-    data.add("t", ["a"])
+    [target, found, count], known = bfs(graph1, [3, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
 
-    # Create nodes
-    a = Node("a")
-    b = Node("b")
-    c = Node("c")
-    d = Node("d")
-    e = Node("e")
-    f = Node("f")
-    r = Node("r")
-    t = Node("t")
+    [target, found, count], known = bfs(graph1, [5, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
 
-    # Add children to nodes
-    a.add_child(b)
-    a.add_child(c)
-    a.add_child(d)
-    b.add_child(e)
-    b.add_child(f)
-    c.add_child(r)
-    c.add_child(t)
+    [target, found, count], known = bfs(graph1, [1, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
 
-    # Perform a breadth-first traversal starting from node "a"
-    print("\n Breadth-first traversal:")
-    visited_nodes = bfs_iterative(a)
-    print(visited_nodes)
+    [target, found, count], known = bfs(graph1, [0, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
 
-    """
-       # The graph will look like this
-       #
-       #       a
-       #    / / \ \
-       #   b    c  d
-       #  / \    /\
-       # e   f  r   t
-       #       |
-       #       a
-       """
+    [target, found, count], known = bfs(graph1, [6, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    graph1 = GraphData([0, 6], g)
+    print('-------------------------')
+
+    [target, found, count], known = bfs(graph1, [3, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    [target, found, count], known = bfs(graph1, [5, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    [target, found, count], known = bfs(graph1, [1, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    [target, found, count], known = bfs(graph1, [0, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    [target, found, count], known = bfs(graph1, [6, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    [target, found, count], known = bfs(graph1, [10, False, 0], on_entry=e1)
+    print(found, ' explored ', count, 'nodes, known: ', known)
+
+    print('-----------------PREDICATE FINDER--------')
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 3)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 5)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 1)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 0)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 6)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+    [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 10)
+    print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+if __name__ == '__main__':
+    main_BFS()
+  
+   
