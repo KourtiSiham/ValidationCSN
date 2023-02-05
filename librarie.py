@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class TransitionRelation(ABC):
     @abstractmethod
     def roots(self):
@@ -8,7 +9,6 @@ class TransitionRelation(ABC):
     @abstractmethod
     def next(self, source):
         pass
-
 
 
 class identifyProxy(object):
@@ -20,31 +20,34 @@ class identifyProxy(object):
 
 
 class ReplaceRootsProxy(identifyProxy):
-    def __init__(self, operand ,newRoots):
+    def __init__(self, operand, newRoots):
         super().__init__(operand)
-        self.newRoots = newRoots #new configurations
+        self.newRoots = newRoots  # new configurations
+
     def roots(self):
-        return self.newroots    
-    
+        return self.newRoots
+
+
 class AcceptingSet:
-    def is_accepting(c): 
+    def is_accepting(c):
         pass
 
+
 class ParentTraceProxy(identifyProxy):
-    def __init__(self, operand,dict=None):
+    def __init__(self, operand, dict=None):
         super().__init__(operand)
         if dict == None:
-            dict= {}
+            dict = {}
         self.dict = dict
-    
+
     def roots(self):
-        neighbours = self.operond.roots()
+        neighbours = self.operand.roots()
         for n in neighbours:
             if n not in self.dict:
                 self.dict[n] = None
         return neighbours
-        #add
-   
+        # add
+
     def next(self, source):
         neighbours = self.operand.next(source)
         for n in neighbours:
@@ -61,19 +64,32 @@ class ParentTraceProxy(identifyProxy):
         return result[::-1]
 
 
+class IsAcceptingProxy(identifyProxy):
+    def __init__(self, operand, predicate):
+        super().__init__(operand)
+        self.predicate = predicate
+
+    def isAccepting(self, c):
+        return self.predicate(c)
+
 
 class SemanticTransitionRelation:
-    def initialConfigurations (self): 
+    def initialConfigurations(self):
         pass
-    def enablesdActions (self, source): 
+
+    def enablesdActions(self, source):
         pass
-    def execute (self, action, source):
-         pass
+
+    def execute(self, action, source):
+        pass
+
 
 class InputSemanticTransitionRelation:
-    def initial (self): 
+    def initial(self):
         pass
-    def enablesdActions (self, input, source): 
+
+    def enablesdActions(self, input, source):
         pass
-    def execute (self, action, input, source): 
+
+    def execute(self, action, input, source):
         pass

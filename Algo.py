@@ -1,7 +1,11 @@
+import inspect
 from collections import deque
+from librarie import *
+from Str2Tr import *
 
 
-def bfs(graph, acc,on_entry=lambda source, n, acc: False, on_known=lambda source, n, acc: False, on_exit =lambda source, acc: False):
+def bfs(graph, acc, on_entry=lambda source, n, acc: False, on_known=lambda source, n, acc: False,
+        on_exit=lambda source, acc: False):
     known = set()
     frontier = deque()
     at_start = True
@@ -25,6 +29,8 @@ def bfs(graph, acc,on_entry=lambda source, n, acc: False, on_known=lambda source
         if on_exit(source, acc):
             return acc, known
     return acc, known
+
+
 def bfs_iterative(starting_node, visited=[]):
     queue = []
     queue.insert(0, starting_node)
@@ -38,6 +44,25 @@ def bfs_iterative(starting_node, visited=[]):
                 visited.append(child)
     return visited
 
+
+def iterative_bfs(graph):
+    visited = []
+    queue = deque()
+    init = True
+    while len(queue) != 0 | init:
+        if init:
+            voisin = graph.roots()
+            init = False
+        else:
+            node = queue.popleft()
+            voisin = graph.next(node)
+        for n in voisin:
+            if n not in visited:
+                if graph.isAccepting(n):
+                    return True
+                queue.append(n)
+                visited.append(n)
+    return False
 
 
 def predicate_finder(
@@ -55,3 +80,46 @@ def predicate_finder(
         return a[1]
 
     return bfs(graph, [predicate, False, 0, None], on_entry=check_predicate)
+
+
+def predicate_model_checker(semantic, predicate):
+    tr = Str2Tr(semantic)
+    tr = IsAcceptingProxy(tr, predicate)
+    predicate_mc(tr, predicate)
+    return iterative_bfs(tr)
+
+
+def get_trace(parents, n, i):
+    trace = [n]
+    try:
+        parent = parents[n]
+    except KeyError:
+        parent = None
+    if isinstance(parent, list):
+        parent = parent[0] if len(parent) > 0 else None
+    while parent is not None:
+        trace.append(parent)
+        if parent in i:
+            return trace
+        try:
+            parent = parents[parent]
+            if isinstance(parent, list):
+                parent = parent[0] if len(parent) > 0 else None
+        except KeyError:
+            parent = None
+    return trace
+
+
+def predicate_mc(transition_relation, predicate):
+    print(f'{"-" * 50}\npredicate model-checking for:\n{inspect.getsource(predicate)}')
+
+    op_tracer = ParentTraceProxy(transition_relation)
+
+    [pred, found, count, target], known = predicate_finder(op_tracer, predicate)
+    print(f'has reachable accepting state {found} after exploring ', count, ' configurations')
+
+    the_trace = []
+    if found is True:
+        the_trace = get_trace(op_tracer.dict, target, op_tracer.roots())
+        trace_string = f'\n{"-" * 20}\n'.join(str(x) for x in the_trace)
+        print(f'The trace is: \n{trace_string}')

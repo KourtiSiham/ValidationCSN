@@ -10,7 +10,7 @@ class Str2Tr(TransitionRelation):
 
     def next(self, s):
         targets = []
-        for a in self.astr.enablesdActions(s):
-            target = self.astr.execute(a, s)
+        for a in self.astr.enabledActions(s):
+            target = self.astr.execute(s, a)
             targets.append(target)
         return targets

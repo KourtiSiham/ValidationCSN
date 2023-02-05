@@ -226,3 +226,4 @@ class HanoiConfiguration(list):
                 if conf[i][j] != self[i][j]:
                     return False
         return True
+

@@ -29,12 +29,16 @@ class SoupSemantics(SemanticTransitionRelation):
         return [self.program.ini]
 
     def enabledActions(self, source):
-        return filter(lambda r: r.guard(source), self.program.rules)  # To be checked
+        # return filter(lambda r: r.guard(source), self.program.rules)
+        return list(map(lambda r: r.action,
+                        filter(lambda r: r.guard(source),
+                               self.program.rules)))
 
-    def execute(self, action, source):
-        target = copy.deepcopy(source)  # source.copy
-        return action.execute(target)
-
+    def execute(self, source, action):
+        target = copy.deepcopy(source)
+        # return action.execute(target)
+        r = action(target)
+        return target
 
 class InputSoupSemantics(InputSemanticTransitionRelation):
     def __init__(self, program):

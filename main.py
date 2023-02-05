@@ -1,37 +1,20 @@
 import inspect
-
 from librarie import *
 from hanoi import *
+from SoupModule import *
+from Str2Tr import Str2Tr
+from graph import *
+from Algo import *
+from AliceBobV1 import *
+from AliceBobV2 import *
+from AliceBobV3 import *
+from nbits import *
 
 
-def main_hanoi_1():
-    # Input: number of disks
-    num_of_disks = 4
-
-    # Create three stacks of size 'num_of_disks'
-    # to hold the disks
-    src = createStack(num_of_disks)
-    dest = createStack(num_of_disks)
-    aux = createStack(num_of_disks)
-
-    tohIterative(num_of_disks, src, aux, dest)
-
-def main_hanoi_2():
-    print("-------------------------")
-    print("Guarde / Action")
-    print("Example 1: ")
-    dic={}
-    hanoi_tower = ParentTraceProxy(Hanoi(3,3),dic)
-    for i, j in [(0, 1), (0, 2), (2, 1)]:
-        init = hanoi_tower.initial()[0]
-        guarde = guarde_def(i, j)
-        action = action_def(i, j)
-        g = guarde(init)
-        if g:
-            a = action(init)
-        print(f'{i},{j} : {"Vrai" if g else "Faux"} -> {init}')
-
-    print("Example 2: ")
+def Hanoi_Main():
+    num_of_disks = 3
+    num_of_stacks = 3
+    hanoi_tower = identifyProxy(Hanoi(num_of_disks, num_of_stacks))
     init = hanoi_tower.initial()[0]
     for i, j in [(0, 2), (0, 1), (2, 1), (0, 2), (1, 0), (1, 2), (0, 2)]:
         guard = guarde_def(i, j)
@@ -39,7 +22,7 @@ def main_hanoi_2():
         g = guard(init)
         if g:
             a = action(init)
-        print(f'{i},{j} : {"Vrai" if g else "Faux"} -> {init}')
+        print(f'{i},{j} : {"True" if g else "False"} -> {init}')
 
     print("-------------------------")
     print("Soup")
@@ -50,52 +33,77 @@ def main_hanoi_2():
     actions = Behavior_Soup.enabledActions(init)
 
     if actions:
-        print("Possible action : ", inspect.getsource(action))
-        for action in actions:
-            execute = Behavior_Soup.execute(init, action)
-            print("Execution output : ", execute)
-
-    print("-------------------------")
-
-    print("STR2TR")
-    str = Str2Tr(Behavior_Soup)
-    init = str.initial()[0]
-    next = str.next(init)
-    print("States after ", init, "are", next)
-
-    print("-------------------------")
-
-
-def main_hanoi_3():
-    num_of_disks = 4
-    hanoi_tower = identifyProxy(Hanoi(3, 3))
-    init = hanoi_tower.initial()[0]
-    for i, j in [(0, 2), (0, 1), (2, 1), (0, 2), (1, 0), (1, 2), (0, 2)]:
-        guard = guarde_def(i, j)
-        action = action_def(i, j)
-        g = guard(init)
-        if g:
-            a = action(init)
-        print(f'{i},{j} : {"Vrai" if g else "Faux"} -> {init}')
-
-    print("-------------------------")
-    print("Soup")
-    soup = hanoi_soap(3, 3)
-    Behavior_Soup = SoupSemantics(soup)
-    init = Behavior_Soup.initial()[0]
-    print("First State: ", init)
-    actions = Behavior_Soup.enabledActions(init)
-
-    if actions:
         for action in actions:
             execute = Behavior_Soup.execute(init, action)
             print("Output : ", execute)
 
     str = Str2Tr(Behavior_Soup)
-    init = str.initial()[0]
+    init = str.roots()[0]
     next = str.next(init)
     print("After ", init, ": ", next)
 
 
+def AliceBobV1_Main():
+    semantic = SoupSemantics(StateCounter())
+    r = predicate_model_checker(semantic, lambda c: c.PC_alice == 1 and c.PC_bob == 0)
+    print(r)
+    r = predicate_model_checker(semantic, lambda c: len(semantic.enabledActions(c)) == 0)
+    print(r)
+
+
+def AliceBobV2_Main():
+    semantic = SoupSemantics(StateCounter())
+    tr = Str2Tr(semantic)
+    tr = IsAcceptingProxy(tr, lambda c: c.PC_alice == 0)
+    print(tr.roots())
+    print(tr.next(tr.roots()[0]))
+    r = predicate_model_checker(semantic, lambda c: c.PC_alice == 1 and c.PC_bob == 1)
+    print(r)
+    r = predicate_model_checker(semantic, lambda c: len(semantic.enabledActions(c)) == 1)
+    print(r)
+
+
+def AliceBobV3_Main():
+    semantic = SoupSemantics(AliceAndBob())
+    r = predicate_model_checker(semantic, lambda c: c.PC_alice == 2 and c.PC_bob == 2)
+    print(r)  # False <-- since they cannot be at the same time in the critical section
+    r = predicate_model_checker(semantic, lambda c: len(semantic.enabledActions(c)) == 0)
+    print(r)
+
+
+def Nbits_Main():
+    x = 16
+    [predicate, target, found, count], known = predicate_finder(NBits([0], 3), lambda n: n == x)
+    print(f'{x} reachable: ', found, ' explored ', count, 'nodes, known: ', binary_print(known))
+
+    x = 5
+    [predicate, target, found, count], known = predicate_finder(NBits([0], 3), lambda n: n == x)
+    print(f'{x} reachable: ', found, ' explored ', count, 'nodes, known: ', binary_print(known))
+
+    x = 1
+    [predicate, target, found, count], known = predicate_finder(NBits([0], 3), lambda n: n == x)
+    print(f'{x} reachable: ', found, ' explored ', count, 'nodes, known: ', binary_print(known))
+
+
 if __name__ == "__main__":
-    main_hanoi_3()
+    while True:
+        Choice = input('\n*****************************************************************\n'
+                       'Choose an option from the following list: \n'
+                       '1. Run Nbits \n'
+                       '2. Run Hanoi to get the two solutions (With and without soup) \n'
+                       '3. Run V1 of Alice and Bob\n'
+                       '4. Run V2 of Alice and Bob\n'
+                       '5. Run V3 of Alice and Bob\n')
+
+        if Choice == '1':
+            Nbits_Main()
+        elif Choice == '2':
+            Hanoi_Main()
+        elif Choice == '3':
+            AliceBobV1_Main()
+        elif Choice == '4':
+            AliceBobV2_Main()
+        elif Choice == '5':
+            AliceBobV3_Main()
+        else:
+            print("Please choose an option from the list")

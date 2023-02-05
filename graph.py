@@ -91,6 +91,8 @@ def main_BFS():
 
     [pred, found, count, target], known = predicate_finder(graph1, lambda n: n == 10)
     print('pred(', target, ')=', found, ' explored ', count, 'nodes, known: ', known)
+
+
 if __name__ == '__main__':
     main_BFS()
   
