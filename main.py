@@ -16,6 +16,7 @@ def Hanoi_Main():
     num_of_stacks = 3
     hanoi_tower = identifyProxy(Hanoi(num_of_disks, num_of_stacks))
     init = hanoi_tower.initial()[0]
+    print("Before Soup")
     for i, j in [(0, 2), (0, 1), (2, 1), (0, 2), (1, 0), (1, 2), (0, 2)]:
         guard = guarde_def(i, j)
         action = action_def(i, j)
@@ -57,10 +58,10 @@ def AliceBobV2_Main():
     tr = IsAcceptingProxy(tr, lambda c: c.PC_alice == 0)
     print(tr.roots())
     print(tr.next(tr.roots()[0]))
-    r = predicate_model_checker(semantic, lambda c: c.PC_alice == 1 and c.PC_bob == 1)
+    r = predicate_model_checker(semantic, lambda c: c.PC_alice == 0 and c.PC_bob == 1)
     print(r)
-    r = predicate_model_checker(semantic, lambda c: len(semantic.enabledActions(c)) == 1)
-    print(r)
+    # r = predicate_model_checker(semantic, lambda c: len(semantic.enabledActions(c)) == 0)
+    # print(r)
 
 
 def AliceBobV3_Main():
