@@ -2,80 +2,47 @@ from Str2Tr import Str2Tr
 from graph import *
 from librarie import *
 from SoupModule import *
+from Algo import *
 
 
-class AliceBobConfiguration:
+class AliceBobConf:
     def __init__(self):
         self.PC_alice = 0
         self.PC_bob = 0
-        self.Flag_alice = 0
-        self.Flag_bob = 0
 
     def __hash__(self):
-        return hash(self.PC_alice + self.PC_bob) + hash(self.Flag_alice + self.Flag_bob)
+        return hash(self.PC_alice + self.PC_bob)
 
     def __eq__(self, other):
-        if other is None:
-            return False
-        return self.PC_alice == other.PC_alice and self.PC_bob == other.PC_bob and self.Flag_bob == other.Flag_bob and self.Flag_alice == other.Flag_alice
+        return self.PC_alice == other.PC_alice & self.PC_bob == other.PC_bob
 
     def __repr__(self):
         return str(self.PC_alice) + str(self.PC_bob)
 
 
-def AliceBob():
-    soup = SoupProgram(AliceBobConfiguration())
+def InitialtoSC_alice(c):
+    c.PC_alice = 1
 
-    def ItoW_alice(c):
-        c.PC_alice = 1
-        c.Flag_alice = 1
 
-    soup.add(Rule("ItoSC_alice", lambda c: c.PC_alice == 0, ItoW_alice))
+def SCtoInitial_alice(c):
+    c.PC_alice = 0
 
-    def WtoSC_alice(c):
-        c.PC_alice = 2
-        c.Flag_alice = 1
 
-    soup.add(Rule("WtoSC_alice", lambda c: c.PC_bob != 2 and c.PC_alice == 1, WtoSC_alice))
+def InitialtoSC_bob(c):
+    c.PC_bob = 1
 
-    def SCtoI_alice(c):
-        c.PC_alice = 0
-        c.Flag_alice = 0
 
-    soup.add(Rule("SCtoI_alice", lambda c: c.PC_alice == 2, SCtoI_alice))
+def SCtoInitial_bob(c):
+    c.PC_bob = 0
 
-    def ItoW_bob(c):
-        c.PC_bob = 1
-        c.Flag_bob = 1
 
-    soup.add(Rule("ItoW_bob", lambda c: c.PC_bob == 0, ItoW_bob))
-
-    def WtoSC_bob(c):
-        c.PC_bob = 2
-        c.Flag_bob = 1
-
-    soup.add(Rule("WtoSC_bob", lambda c: c.PC_bob == 1 and c.PC_alice != 2, WtoSC_bob))
-
-    def SCtoI_bob(c):
-        c.PC_bob = 0
-        c.Flag_bob = 0
-
-    soup.add(Rule("SCtoI_bob", lambda c: c.PC_bob == 2, SCtoI_bob))
+def StateCounter():
+    soup = SoupProgram(AliceBobConf())
+    #  If alice is still at the initial state (at home) then Counter will be 1 and access to critical section
+    soup.add(Rule("Alice : Initial to critical section", lambda c: c.PC_alice == 0, InitialtoSC_alice))
+    #  If alice is still at the critical section (garden) then Counter will be 0 and return home
+    soup.add(Rule("Alice : Critical section to Initial state", lambda c: c.PC_alice == 1, SCtoInitial_alice))
+    soup.add(Rule("Alice : Initial state to critical section", lambda c: c.PC_bob == 0, InitialtoSC_alice))
+    soup.add(Rule("Bob: Critical section to Initial state", lambda c: c.PC_bob == 1, SCtoInitial_bob))
 
     return soup
-
-
-def a_in_cs(c):
-    return c.PC_alice == 2
-
-
-def b_in_cs(c):
-    return c.PC_bob == 2
-
-
-if __name__ == '__main__':
-    semantic = SoupSemantics(AliceBob())
-    # r = predicate_model_checker(semantic, lambda c: c.PC_alice == 2 and c.PC_bob == 2)
-    # print(r)
-    # r = predicate_model_checker(semantic, lambda c: len(semantic.actions(c)) == 0)
-    # print(r)
